@@ -28,9 +28,10 @@ class Record:
         
 class CaloriesCalculator(Calculator):
 
-    def get_calories_remained(self):    
+    def get_calories_remained(self):
+        calories =  self.limit - self.get_today_stats()
         if self.get_today_stats() < self.limit:
-            return f'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {self.limit - self.get_today_stats()} кКал'
+            return f'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {calories} кКал'
         return 'Хватит есть!'
             
 class CashCalculator(Calculator):
@@ -40,20 +41,25 @@ class CashCalculator(Calculator):
     def get_today_cash_remained(self, currency):
         count = self.limit - self.get_today_stats()
         
-        cash_dict = {
+        currencies = {
         "rub" : ('руб', 1),
         "usd" : ('USD', self.USD_RATE),
         "eur" : ('Euro', self.EURO_RATE)
         }
 
-        total = abs(count / cash_dict[currency][1])
+        name, rate = currencies[currency]
+
+        if currency == "rub":
+            total = int(abs(count / rate))
+        else:
+            total = round(abs(count / rate), 2)
 
         if count > 0:
-            return f'На сегодня осталось {int(total) if currency == "rub" else round(total, 2)} {cash_dict[currency][0]}'
+            return f'На сегодня осталось {total} {name}'
         elif count == 0:
             return 'Денег нет, держись'      
         else:
-            return f'Денег нет, держись: твой долг - {int(total) if currency == "rub" else round(total, 2)} {cash_dict[currency][0]}'
+            return f'Денег нет, держись: твой долг - {total} {name}'
 
 
 
