@@ -1,1 +1,1 @@
-Calorie calculator
+CaloriesCashCalculator
